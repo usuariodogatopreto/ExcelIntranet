@@ -23,7 +23,7 @@ function main(workbook: ExcelScript.Workbook) {
   relatorio = workbook.getWorksheet("Relatório")
 
   // define quantos dias faltantes minimos para registrar a loja
-  dias = 1
+  dias = 10
   valores.forEach((list) => {
     let valido = true
     let validoComeco = true
@@ -36,7 +36,7 @@ function main(workbook: ExcelScript.Workbook) {
         if(value == "" && validoComeco) {
           diasInicio++
         } else if (value == "" && !validoComeco) {
-          if (date - (i - 1) - diasInicio > dias) {
+          if (date - (i - 1) - diasInicio > dias && list[i + 1] == "") {
             lojasFaltantes.push(list[0])
             break
           }
