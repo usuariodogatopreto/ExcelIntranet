@@ -16,12 +16,14 @@ function main(workbook: ExcelScript.Workbook) {
   // tabelas e sheets
   let relatorio: ExcelScript.Worksheet
   let valores = vendas.getRange("C3:AI" + String(total + 1)).getTexts()
-  // cria sheet Relatório
-  if (workbook.getLastWorksheet().getName() != "Relatório") workbook.addWorksheet("Relatório")
+  // cria sheet Relatório e verifica se já existe
+  let relSheet = workbook.getWorksheet("Relatório")
+  if (relSheet == undefined) { workbook.addWorksheet("Relatório") } 
+  else {relSheet.delete(); workbook.addWorksheet("Relatório")}
   relatorio = workbook.getWorksheet("Relatório")
 
   // define quantos dias faltantes minimos para registrar a loja
-  dias = 1
+  dias = 10
   valores.forEach((list) => {
     let i = 0
     for (const value of list) {
@@ -36,7 +38,6 @@ function main(workbook: ExcelScript.Workbook) {
       i++
     }
   })
-  console.log(lojasFaltantes)
   // escreve no sheet Relatório as lojas que faltam informar
   relatorio.getRange("A:A").getCell(0, 0).setValue("Lojas Faltam Informar")
   for (const value of lojasFaltantes) {
