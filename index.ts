@@ -23,16 +23,25 @@ function main(workbook: ExcelScript.Workbook) {
   relatorio = workbook.getWorksheet("Relatório")
 
   // define quantos dias faltantes minimos para registrar a loja
-  dias = 10
+  dias = 1
   valores.forEach((list) => {
+    let valido = true
+    let validoComeco = true
     let i = 0
+    let diasInicio = 0
+    // verifica quais lojas podem ser cobrados mesmo que tenham dias iniciais faltantes
+    // Ex: A loja começou no dia 15/12/2025 e começou a informar as vendas apenas agora, nisso os 15 dias anteriores não devem ser considerados
     for (const value of list) {
       if (i > 1) {
-        if (value == "") {
-          if (date - (i - 1) > dias) {
+        if(value == "" && validoComeco) {
+          diasInicio++
+        } else if (value == "" && !validoComeco) {
+          if (date - (i - 1) - diasInicio > dias) {
             lojasFaltantes.push(list[0])
             break
           }
+        } else {
+          validoComeco = false
         }
       }
       i++
